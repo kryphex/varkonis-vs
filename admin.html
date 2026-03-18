@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Panel — VARKONIS</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#07070e;--s1:#0c0c16;--s2:#11111e;--s3:#171728;--bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.11);--bdr3:rgba(255,255,255,.18);--t:#fff;--t2:rgba(255,255,255,.55);--t3:rgba(255,255,255,.28);--t4:rgba(255,255,255,.1);--a:#4f6ef7;--a2:#7b94ff;--ag:rgba(79,110,247,.1);--ag2:rgba(79,110,247,.18);--g:#1fcfa0;--gag:rgba(31,207,160,.1);--r:#f75a5a;--rag:rgba(247,90,90,.1);--amber:#f59e0b;--sw:240px;--ease:cubic-bezier(.16,1,.3,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--t);display:flex;min-height:100vh;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:rgba(245,158,11,.4);border-radius:2px}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.025;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23f)'/%3E%3C/svg%3E")}
+.sidebar{width:var(--sw);flex-shrink:0;background:var(--s1);border-right:1px solid var(--bdr);display:flex;flex-direction:column;position:fixed;height:100vh;left:0;top:0;z-index:100}
+.sb-logo{display:flex;align-items:center;gap:.6rem;padding:1.5rem 1.4rem;border-bottom:1px solid var(--bdr);font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.06em}
+.sb-logo-ico{width:30px;height:30px;background:var(--amber);display:grid;place-items:center;font-size:.72rem;font-weight:900;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);animation:spin 12s linear infinite;flex-shrink:0}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.sb-badge-pill{font-size:.58rem;padding:.15rem .5rem;background:rgba(245,158,11,.15);color:var(--amber);border-radius:100px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:.3rem}
+.sb-section{padding:.5rem .75rem;margin-top:.5rem}
+.sb-label{font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--t3);padding:.3rem .65rem;margin-bottom:.2rem;font-weight:600}
+.sb-link{display:flex;align-items:center;gap:.65rem;padding:.6rem .65rem;border-radius:6px;font-size:.8rem;color:var(--t2);transition:all .18s;cursor:pointer;position:relative;text-decoration:none}
+.sb-link:hover{background:var(--s3);color:var(--t)}
+.sb-link.active{background:rgba(245,158,11,.12);color:var(--amber)}
+.sb-link.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;background:var(--amber);border-radius:2px}
+.sb-link svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;flex-shrink:0}
+.sb-bottom{margin-top:auto;border-top:1px solid var(--bdr);padding:.75rem}
+.sb-logout{display:flex;align-items:center;gap:.65rem;padding:.6rem .65rem;border-radius:6px;font-size:.78rem;color:var(--t3);transition:all .18s;cursor:pointer;text-decoration:none;border:none;background:none;width:100%}
+.sb-logout:hover{background:var(--rag);color:var(--r)}.sb-logout svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;border-bottom:1px solid var(--bdr);background:rgba(7,7,14,.85);backdrop-filter:blur(20px);position:sticky;top:0;z-index:50}
+.admin-badge{display:flex;align-items:center;gap:.4rem;font-size:.68rem;color:var(--amber);font-weight:600;padding:.3rem .75rem;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:100px}
+.content{padding:2rem;flex:1}
+.page-title{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;letter-spacing:-.025em;margin-bottom:.4rem}
+.page-sub{font-size:.88rem;color:var(--t2);margin-bottom:2rem}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.kpi{background:var(--s1);border:1px solid var(--bdr);border-radius:8px;padding:1.4rem;transition:border-color .2s}
+.kpi:hover{border-color:var(--bdr2)}
+.kpi-icon{width:34px;height:34px;border-radius:6px;display:grid;place-items:center;margin-bottom:1rem}
+.kpi-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8}
+.kpi-icon.blue{background:var(--ag);color:var(--a2)}.kpi-icon.green{background:var(--gag);color:var(--g)}.kpi-icon.amber{background:rgba(245,158,11,.1);color:var(--amber)}.kpi-icon.red{background:var(--rag);color:var(--r)}
+.kpi-label{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:.35rem}
+.kpi-value{font-family:'Syne',sans-serif;font-size:1.65rem;font-weight:800;line-height:1;margin-bottom:.35rem}
+.kpi-sub{font-size:.68rem;color:var(--t3)}
+.card{background:var(--s1);border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin-bottom:1.2rem}
+.card-header{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.4rem;border-bottom:1px solid var(--bdr)}
+.card-title{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700}
+.tb-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .9rem;border-radius:5px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .18s;border:1px solid var(--bdr2);color:var(--t2);background:transparent;text-decoration:none;font-family:inherit}
+.tb-btn:hover{border-color:var(--bdr3);color:var(--t);background:var(--s2)}
+.tb-btn.success{background:var(--g);border-color:var(--g);color:#000;font-weight:700}
+.tb-btn.danger{background:var(--r);border-color:var(--r);color:#fff}
+.tb-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+.filter-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;padding:1rem 1.4rem;border-bottom:1px solid var(--bdr)}
+.srch-box{display:flex;align-items:center;gap:.5rem;background:var(--s2);border:1px solid var(--bdr2);border-radius:6px;padding:.4rem .75rem;flex:1;min-width:200px}
+.srch-box svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0;color:var(--t3)}
+.srch-box input{background:none;border:none;outline:none;font-family:inherit;font-size:.8rem;color:var(--t);width:100%}
+.srch-box input::placeholder{color:var(--t3)}
+.filter-btns{display:flex;gap:.4rem;flex-wrap:wrap}
+.fb{padding:.38rem .75rem;border-radius:5px;font-size:.72rem;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all .15s;background:none;color:var(--t3);font-family:inherit}
+.fb:hover{color:var(--t);background:var(--s2)}.fb.on{background:var(--s2);color:var(--t);border-color:var(--bdr2)}
+.fb.on.fadm{background:rgba(245,158,11,.15);color:var(--amber);border-color:rgba(245,158,11,.2)}
+.fb.on.fpaid{background:var(--ag2);color:var(--a2);border-color:rgba(79,110,247,.2)}
+.fb.on.ffree{background:var(--t4);color:var(--t2);border-color:var(--bdr2)}
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1px solid var(--bdr)}
+thead th{padding:.6rem 1.2rem;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);text-align:left;font-weight:600}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.03);transition:background .15s}
+tbody tr:hover td{background:rgba(255,255,255,.015)}tbody tr:last-child td{border-bottom:none}
+td{padding:.75rem 1.2rem;font-size:.78rem}
+.role-chip{display:inline-flex;align-items:center;padding:.18rem .55rem;border-radius:100px;font-size:.62rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.role-chip.admin{background:rgba(245,158,11,.15);color:var(--amber)}.role-chip.paid{background:var(--ag2);color:var(--a2)}.role-chip.free{background:var(--t4);color:var(--t3)}
+.select-role{background:var(--s2);border:1px solid var(--bdr2);color:var(--t);padding:.3rem .6rem;border-radius:4px;font-size:.75rem;cursor:pointer;font-family:inherit;transition:border-color .15s}
+.select-role:focus{outline:none;border-color:var(--a)}
+.tab-row{display:flex;gap:.5rem;border-bottom:1px solid var(--bdr);padding:0 1.4rem}
+.tab{padding:.8rem 1rem;font-size:.78rem;color:var(--t3);cursor:pointer;transition:color .18s;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--t2)}.tab.on{color:var(--a2);border-color:var(--a)}
+.tab-panel{display:none;padding:1.4rem}.tab-panel.on{display:block}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px solid var(--bdr)}
+.stat-row:last-child{border-bottom:none}.stat-name{font-size:.8rem;color:var(--t2)}.stat-val{font-family:'JetBrains Mono',monospace;font-size:.82rem}
+.dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--s2);border:1px solid var(--bdr2);border-radius:8px;padding:1rem 1.4rem;font-size:.82rem;z-index:9999;display:none;align-items:center;gap:.75rem;min-width:280px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.toast.show{display:flex}.toast.success{border-color:rgba(31,207,160,.3)}.toast svg{width:16px;height:16px;stroke:var(--g);fill:none;stroke-width:2}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0}.kpi-grid{grid-template-columns:1fr 1fr}.dash-grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sb-logo"><div class="sb-logo-ico">V</div>VARKONIS<span class="sb-badge-pill">Admin</span></div>
+  <div class="sb-section">
+    <div class="sb-label">Admin</div>
+    <a href="admin.html" class="sb-link active"><svg viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>User Management</a>
+    <a href="#" class="sb-link" onclick="switchTab('billing');return false"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Billing & Plans</a>
+    <a href="#" class="sb-link" onclick="switchTab('analytics');return false"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Analytics</a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Platform</div>
+    <a href="app-dashboard.html" class="sb-link"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+  </div>
+  <div class="sb-bottom">
+    <button class="sb-logout" onclick="signOut()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="font-size:.78rem;color:var(--t3)">VARKONIS / <span style="color:var(--t2)">Admin Panel</span></div>
+    <div class="admin-badge"><svg style="width:12px;height:12px;stroke:var(--amber);fill:none;stroke-width:2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Admin Access</div>
+  </header>
+
+  <div class="content" id="main-content">
+    <div style="display:grid;place-items:center;height:60vh"><div style="color:var(--amber);font-family:'Syne',sans-serif">Verifying admin access...</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span id="toast-msg"></span></div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+const sb = createClient('https://neaqsrrgqjdwjdpocuul.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lYXFzcnJncWpkd2pkcG9jdXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODE1MDIsImV4cCI6MjA4OTE1NzUwMn0.1YcWGKvhC-ywfBTemPN6i8jUMWCVS9zKAOmoJZhLnFc')
+window._sb = sb
+
+async function init() {
+  const { data:{session} } = await sb.auth.getSession()
+  if (!session) { window.location.href='https://varkonis-auth.vercel.app/login'; return }
+  const { data:profile } = await sb.from('profiles').select('*').eq('id',session.user.id).single()
+  if (!profile || profile.role !== 'admin') { window.location.href='app-dashboard.html'; return }
+  renderAdmin()
+  loadUsers()
+}
+
+function renderAdmin() {
+  document.getElementById('main-content').innerHTML = `
+    <h1 class="page-title">Admin Panel</h1>
+    <p class="page-sub">Manage users, roles, and platform analytics.</p>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-icon blue"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div><div class="kpi-label">Total Users</div><div class="kpi-value" id="stat-total">—</div><div class="kpi-sub" id="stat-paid-pct">—</div></div>
+      <div class="kpi"><div class="kpi-icon green"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="kpi-label">Paid Users</div><div class="kpi-value" id="stat-paid">—</div><div class="kpi-sub">Active subscribers</div></div>
+      <div class="kpi"><div class="kpi-icon red"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="8.01" y2="15"/><line x1="12" y1="15" x2="12.01" y2="15"/><line x1="16" y1="15" x2="16.01" y2="15"/><path d="M9 9h.01"/><path d="M15 9h.01"/><path d="M12 9h.01"/></svg></div><div class="kpi-label">Free Users</div><div class="kpi-value" id="stat-free">—</div><div class="kpi-sub">Conversion targets</div></div>
+      <div class="kpi"><div class="kpi-icon amber"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div><div class="kpi-label">Admins</div><div class="kpi-value" id="stat-admin">—</div><div class="kpi-sub">Platform admins</div></div>
+    </div>
+    <div class="card">
+      <div class="tab-row">
+        <div class="tab on" id="tab-users" onclick="switchTab('users')">Users</div>
+        <div class="tab" id="tab-billing" onclick="switchTab('billing')">Billing</div>
+        <div class="tab" id="tab-analytics" onclick="switchTab('analytics')">Analytics</div>
+      </div>
+      <div class="tab-panel on" id="panel-users">
+        <div class="filter-bar">
+          <div class="srch-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="search-input" placeholder="Search by name, email..."/></div>
+          <div class="filter-btns" id="filter-btns"></div>
+        </div>
+        <div style="overflow-x:auto">
+          <table><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="users-table"></tbody></table>
+        </div>
+        <div style="padding:.75rem 1.4rem;border-top:1px solid var(--bdr);font-size:.72rem;color:var(--t3);display:flex;justify-content:space-between"><span id="users-count">Loading...</span><span>Changes take effect immediately</span></div>
+      </div>
+      <div class="tab-panel" id="panel-billing">
+        <div class="dash-grid-2">
+          <div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;margin-bottom:1rem">Revenue Overview</h3><div class="stat-row"><div class="stat-name">Monthly Recurring Revenue</div><div class="stat-val" id="bill-mrr">—</div></div><div class="stat-row"><div class="stat-name">Annual Run Rate</div><div class="stat-val" id="bill-arr">—</div></div><div class="stat-row"><div class="stat-name">Conversion Rate</div><div class="stat-val" id="bill-conv">—</div></div></div>
+          <div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;margin-bottom:1rem">Plan Distribution</h3><div class="stat-row"><div class="stat-name">Free plan</div><div class="stat-val" id="bill-free">—</div></div><div class="stat-row"><div class="stat-name">Paid plan</div><div class="stat-val" id="bill-paid">—</div></div><div class="stat-row"><div class="stat-name">Admin</div><div class="stat-val" id="bill-admin">—</div></div></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="panel-analytics">
+        <div class="dash-grid-2">
+          <div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;margin-bottom:1rem">Platform Stats</h3><div class="stat-row"><div class="stat-name">Total registered users</div><div class="stat-val" id="an-total">—</div></div><div class="stat-row"><div class="stat-name">Paid conversion rate</div><div class="stat-val" id="an-conv">—</div></div><div class="stat-row"><div class="stat-name">Admin accounts</div><div class="stat-val" id="an-admin">—</div></div><div class="stat-row"><div class="stat-name">Newest user</div><div class="stat-val" style="font-family:'JetBrains Mono',monospace;font-size:.7rem" id="an-newest">—</div></div></div>
+        </div>
+      </div>
+    </div>`
+  document.getElementById('search-input').addEventListener('input',function(){window._searchQ=this.value;renderTable(window._allUsers||[]);});
+}
+
+window.loadUsers = async function() {
+  const { data:users, error } = await sb.from('profiles').select('*').order('created_at',{ascending:false})
+  if (error) { console.error(error); return }
+  window._allUsers = users
+  const total=users.length,paid=users.filter(u=>u.role==='paid').length,free=users.filter(u=>u.role==='free').length,admins=users.filter(u=>u.role==='admin').length
+  const pctPaid=total>0?Math.round((paid/total)*100):0
+  document.getElementById('stat-total').textContent=total
+  document.getElementById('stat-paid').textContent=paid
+  document.getElementById('stat-free').textContent=free
+  document.getElementById('stat-admin').textContent=admins
+  document.getElementById('stat-paid-pct').textContent=pctPaid+'% conversion'
+  document.getElementById('users-count').textContent=total+' total users'
+  document.getElementById('bill-free').textContent=free
+  document.getElementById('bill-paid').textContent=paid
+  document.getElementById('bill-admin').textContent=admins
+  const mrr=paid*1290
+  document.getElementById('bill-mrr').textContent='$'+mrr.toLocaleString()
+  document.getElementById('bill-arr').textContent='$'+(mrr*12).toLocaleString()
+  document.getElementById('bill-conv').textContent=pctPaid+'%'
+  document.getElementById('an-total').textContent=total
+  document.getElementById('an-conv').textContent=pctPaid+'%'
+  document.getElementById('an-admin').textContent=admins
+  if(users.length>0)document.getElementById('an-newest').textContent=users[0].email||'Unknown'
+  renderFilters(users)
+  renderTable(users)
+}
+
+function renderFilters(users) {
+  const t=users.length,pa=users.filter(u=>u.role==='paid').length,fr=users.filter(u=>u.role==='free').length,ad=users.filter(u=>u.role==='admin').length
+  const f=window._filterRole||'all'
+  document.getElementById('filter-btns').innerHTML=[
+    {k:'all',l:`All (${t})`,cls:'fall'},{k:'free',l:`Free (${fr})`,cls:'ffree'},{k:'paid',l:`Paid (${pa})`,cls:'fpaid'},{k:'admin',l:`Admin (${ad})`,cls:'fadm'}
+  ].map(x=>`<button class="fb ${x.cls} ${f===x.k?'on':''}" onclick="setFilter('${x.k}')">${x.l}</button>`).join('')
+}
+
+window.setFilter = function(r){window._filterRole=r;renderFilters(window._allUsers||[]);renderTable(window._allUsers||[]);}
+
+function renderTable(users) {
+  const q=(window._searchQ||'').toLowerCase(),f=window._filterRole||'all'
+  const filtered=users.filter(u=>{
+    const ms=!q||(u.full_name||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q)
+    const mr=f==='all'||u.role===f
+    return ms&&mr
+  })
+  document.getElementById('users-count').textContent=`Showing ${filtered.length} of ${users.length} users`
+  if(!filtered.length){document.getElementById('users-table').innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:2rem">No users found</td></tr>';return}
+  document.getElementById('users-table').innerHTML=filtered.map(u=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:.65rem"><div style="width:30px;height:30px;border-radius:50%;background:${u.role==='admin'?'linear-gradient(135deg,var(--amber),#8b5e00)':u.role==='paid'?'linear-gradient(135deg,var(--a),#1e2f8a)':'var(--s3)'};display:grid;place-items:center;font-family:'Syne',sans-serif;font-size:.68rem;font-weight:800;flex-shrink:0;color:#fff">${(u.full_name||u.email||'?')[0].toUpperCase()}</div><div style="font-weight:600;font-size:.8rem">${u.full_name||'—'}</div></div></td>
+    <td style="color:var(--t2);font-size:.75rem">${u.email||'—'}</td>
+    <td><select class="select-role" onchange="updateRole('${u.id}',this.value)"><option value="free" ${u.role==='free'?'selected':''}>Free</option><option value="paid" ${u.role==='paid'?'selected':''}>Paid</option><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option></select></td>
+    <td style="color:var(--t3);font-size:.72rem">${u.created_at?new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—'}</td>
+    <td><div style="display:flex;gap:.4rem"><button class="tb-btn success" style="font-size:.68rem;padding:.3rem .65rem" onclick="updateRole('${u.id}','paid')">→ Paid</button><button class="tb-btn" style="font-size:.68rem;padding:.3rem .65rem" onclick="updateRole('${u.id}','free')">→ Free</button></div></td>
+  </tr>`).join('')
+}
+
+window.updateRole = async function(userId, newRole) {
+  const { error } = await sb.from('profiles').update({role:newRole}).eq('id',userId)
+  if (error) { showToast('Error: '+error.message,false); return }
+  showToast('Role updated to '+newRole+' ✓')
+  loadUsers()
+}
+
+window.switchTab = function(tab) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'))
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'))
+  const tabEl=document.getElementById('tab-'+tab)
+  const panelEl=document.getElementById('panel-'+tab)
+  if(tabEl)tabEl.classList.add('on')
+  if(panelEl)panelEl.classList.add('on')
+}
+
+function showToast(msg,success=true) {
+  const t=document.getElementById('toast'),m=document.getElementById('toast-msg')
+  m.textContent=msg
+  t.className='toast show '+(success?'success':'')
+  setTimeout(()=>t.className='toast',3000)
+}
+
+window.signOut = async function() {
+  await sb.auth.signOut()
+  window.location.href='index.html'
+}
+
+init()
+</script>
+</body></html>
