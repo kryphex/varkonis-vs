@@ -1,0 +1,20 @@
+packages:
+  "framer-motion": "For smooth page transitions, scroll animations, and interactive component states"
+  "clsx": "For conditional class name merging"
+  "tailwind-merge": "For merging tailwind classes safely"
+  "lucide-react": "For beautiful, consistent iconography across the platform"
+
+images:
+  - path: "artifacts/varkonis/public/images/hero-glow.png"
+    description: "Abstract soft deep blue and teal gradient glow on a black background, very subtle light leak effect"
+    aspect_ratio: "16:9"
+  - path: "artifacts/varkonis/public/images/platform-abstract.png"
+    description: "Abstract 3D geometric shapes in dark navy and electric blue, representing data nodes and connectivity, premium financial SaaS aesthetic"
+    aspect_ratio: "16:9"
+  - path: "artifacts/varkonis/public/images/case-study-1.png"
+    description: "Abstract architectural elements with a deep blue tint, representing institutional stability"
+    aspect_ratio: "4:3"
+
+notes:
+  - "The app uses framer-motion for complex UI interactions and page transitions."
+  - "No real backend is hooked up; using mock data and local state for forms and interactions to demonstrate the frontend functionality."
